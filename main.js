@@ -7,12 +7,60 @@ let dataCalculator = (function (){
         return UIController.GVals();
     }
     
-    //::::::::::::|REGEX FOR VALIDATE EACH NUMBER ENTERED
+    //::::::::::::|REGEX FOR VALIDATING EACH SET OF NUMBER ENTERED
     let digitsRegx = /^([-*|.|\+*|\d+]|[\d]*)\d*?\.{0,1}?(\d+)$/g;
     let operRegx = /^[*%+-\/]$/g;
 
+    //::::::::::::|ADD PUNCTUATIONS
+    function addPunc(num) {
+        //========|IF CONVERT TO STRING IF NOT SO
+        if (typeof num !== 'string') { num = num.toString() };
+
+        let dotPos, partA, partB, res = [], str;
+        //========|CHECK IF DECIMAL EXISTS
+        dotPos = num.indexOf('.');
+        
+        //========|IF DECIMAL EXISTS BREAKDOWN INTO TWO
+        if (dotPos !== -1) {
+            partA = num.slice(0, dotPos);
+            partB = num.slice(dotPos+1, num.length);
+            str = partA.split('');
+        } else {
+            str = num.split('');
+        }
+    
+        //========|IF PRE DECIMAL LENGTH IS LESS THAN THREE RETURN AS IS
+        if (str.length <= 3) { return num; }
+        console.log("happening");
+        let count = 0;
+        for (let n = str.length-1; n > -1; n--) {
+            if (count === 3) {
+                if (n === 0 & str[0] === '-') {
+                    res.unshift(str[n]);
+                    count = 0;
+                } else {
+                    res.unshift(',');
+                    res.unshift(str[n]);
+                    count = 0;
+                }
+            } else {
+                res.unshift(str[n]);
+            }
+            count += 1;
+        }
+        if (dotPos !== -1) {
+            return res.join('').concat('.').concat(partB);
+        }
+        return (res.join(''));
+    }
+
     //::::::::::::|FINAL CALCULATOR
     function finalCalculator () {
+        if (calcsHolder.length === 2) {
+            if (calcsHolder[0] === '-') {
+                return calcsHolder.join('');
+            }
+        }
         let results = 0;
         let mathMaker;
         let arr = [...calcsHolder];
@@ -126,18 +174,20 @@ let dataCalculator = (function (){
         //========|CALL THIRD RECURSOR THEN RESET VARIABLES
         thirdPass(arr);
         console.log("POST THIRD PASS", arr);
-        
+
         results = arr[0];
         if (results % 1 !== 0) {
             results = results.toFixed(2);
         }
+
         console.log(results);
-        UIController.updateResults(results);
+        UIController.updateResults(addPunc(results));
     }
     
     return {
         //========|UPDATE INTERNAL DATA HOLDER
         updateHold: function (calcs) {
+            console.log(calcs);
             if(calcs.length === 1) {
                 calcsHolder = calcs;
             } else if (calcs.length > 1) {
@@ -150,6 +200,7 @@ let dataCalculator = (function (){
             for (let x = 0; x < calcsHolder.length; x++) {
                 if (x % 2 === 0) {
                     let temp = calcsHolder[x].match(digitsRegx);
+                    console.log(temp);
                     if (!temp) {
                         UIController.updateResults('INVALID');
                         return;
@@ -195,7 +246,6 @@ let UIController = (function () {
     //::::::::::::|VALID KEY PRESS VALUES
     const valOper = [ '%', '*', '/', '+', '-' ];
     const valKeys = [ '7', '8', '9', '4', '5', '6', '1', '2', '3', '0'];
-    valCode = [27, 8];
     
     
     //::::::::::::|CURRENT DISPLAY VALUES
@@ -205,34 +255,56 @@ let UIController = (function () {
     return {
         //========|SEND STRINGS TO OTHERS
         GVals: function () {
-            return { DOMStrings, valKeys, valCode, valOper, currentDisp };
+            return { DOMStrings, valKeys, valOper, currentDisp };
         },
         //========|UPDATE DISPLAY
         updateDisplay: function (keyPress) {
-            if (currentDisp.length < 28) {
-                if (valKeys.indexOf(keyPress.key) !== -1 || keyPress.key === '.') {
-                    tempHolder.push(keyPress.key);
-                    currentDisp.push(keyPress.key);
-                    console.log(tempHolder, currentDisp);
-                } else if (valOper.indexOf(keyPress.key) !== -1) {
-                    tempHolder.push('x');
-                    tempHolder.push(keyPress.key);
-                    tempHolder.push('x');
-                    currentDisp.push(keyPress.key);
-                    console.log(tempHolder, currentDisp);
-                } else if (keyPress.key === "Backspace") {
+            if (currentDisp.length < 25) {
+                if (valKeys.indexOf(keyPress) !== -1 || keyPress === '.') {
+                    tempHolder.push(keyPress);
+                    currentDisp.push(keyPress);
+                } else if (valOper.indexOf(keyPress) !== -1) {
+                    console.log("tehmpholder", tempHolder);
+                    if (tempHolder.length === 0 && keyPress === '-') {
+                            tempHolder.push(keyPress);
+                            currentDisp.push(keyPress);
+                    } else if (tempHolder.length >= 1) {
+                        tempHolder.push('x');
+                        tempHolder.push(keyPress);
+                        tempHolder.push('x');
+                        currentDisp.push(keyPress);
+                    }
+                } else if (keyPress === "Backspace") {
                     if (tempHolder[tempHolder.length-1] === "x") {
                         currentDisp.pop();
                         tempHolder.pop();
                         tempHolder.pop();
                         tempHolder.pop();
-                        console.log(tempHolder, currentDisp);
                     } else {
                         currentDisp.pop();
                         tempHolder.pop();
-                        console.log(tempHolder, currentDisp);
+                    }
+                } else {
+                    currentDisp = 0;
+                    tempHolder = [];
+                }
+            } else {
+                if (keyPress === "Backspace") {
+                    if (tempHolder[tempHolder.length-1] === "x") {
+                        currentDisp.pop();
+                        tempHolder.pop();
+                        tempHolder.pop();
+                        tempHolder.pop();
+                    } else {
+                        currentDisp.pop();
+                        tempHolder.pop();
                     }
                 }
+            }
+            if (currentDisp === 0) {
+                document.querySelector(DOMStrings.disp).innerHTML = 0;
+                dataCalculator.updateHold(tempHolder);
+            } else {
                 document.querySelector(DOMStrings.disp).innerHTML = currentDisp.join('');
                 dataCalculator.updateHold(tempHolder.join(''));
             }
@@ -264,38 +336,133 @@ let mainController = (function(dataCalc, UICtrlr) {
     
     //::::::::::::|EVENT LISTENERS 
     var eventListeners = function () {
-        let tempOper = 0, tempDec = 0, currpos = 0;
+        let tempOper = 0, tempDec = 0, currpos = 0; currKey = 0;
         //========|KEY PRESS DETECTION
         document.addEventListener("keydown", e => {
-            if (GVals().valKeys.indexOf(e.key) !== -1) {
+            currKey = e.key;
+            if (GVals().valKeys.indexOf(currKey) !== -1) {
                 tempOper = 0;
                 currpos += 1;
-                updateFirst(e);
-            } else if (GVals().valOper.indexOf(e.key) !== -1 && tempOper === 0) {
+                updateFirst(currKey);
+            } else if (GVals().valOper.indexOf(currKey) !== -1 && tempOper === 0) {
                 tempOper += 1, tempDec = 0;
                 currpos += 1;
-                updateFirst(e);
-            } else if (e.key === '.' && tempDec === 0) {
+                updateFirst(currKey);
+            } else if (currKey === '.' && tempDec === 0) {
                 tempDec += 1;
                 currpos += 1;
-                updateFirst(e);
-            } else if (e.keyCode === 13) { // ENTER KEY
+                updateFirst(currKey);
+            } else if (currKey === 'Enter') { // ENTER KEY
                 tempOper = 0;
                 updateSecond();
-            } else if (e.key === "Escape") { // ESCAPE KEY
+            } else if (currKey === "Escape") { // ESCAPE KEY
                 tempOper = 0, tempDec = 0;
                 re_initialise();
-                console.log("Esc");
-            } else if (e.key === "Backspace") { // BACKSPACE KEY
-                updateFirst(e);
-                console.log("Backspace");
+            } else if (currKey === "Backspace") { // BACKSPACE KEY
+                updateFirst(currKey);
             }
-        });        
+        })
+        
+        document.querySelector('.one').addEventListener('click', () => updateFirst('1'));
+        document.querySelector('.two').addEventListener('click', () => updateFirst('2'));
+        document.querySelector('.three').addEventListener('click', () => updateFirst('3'));
+        document.querySelector('.four').addEventListener('click', () => updateFirst('4'));
+        document.querySelector('.five').addEventListener('click', () => updateFirst('5'));
+        document.querySelector('.six').addEventListener('click', () => updateFirst('6'));
+        document.querySelector('.seven').addEventListener('click', () => updateFirst('7'));
+        document.querySelector('.eight').addEventListener('click', () => updateFirst('8'));
+        document.querySelector('.nine').addEventListener('click', () => updateFirst('9'));
+        document.querySelector('.zero').addEventListener('click', () => updateFirst('0'));
+        document.querySelector('.perc').addEventListener('click', () => updateFirst('%'));
+        document.querySelector('.divi').addEventListener('click', () => updateFirst('/'));
+        document.querySelector('.mult').addEventListener('click', () => updateFirst('*'));
+        document.querySelector('.minu').addEventListener('click', () => updateFirst('-'));
+        document.querySelector('.plus').addEventListener('click', () => updateFirst('+'));
+        document.querySelector('.ente').addEventListener('click', () => updateSecond());
+        document.querySelector('.esca').addEventListener('click', () => re_initialise());
+        document.querySelector('.back').addEventListener('click', () => updateFirst('Backspace'));
     }
-    
     
     //::::::::::::|UPDATE DISPLAY ONLY & DATA STRUCTURE
     function updateFirst (keyPress) {
+        //FOR BLINK EFFECT
+        let affector, blinkMake;
+        switch (keyPress) {
+            case '1':
+                affector = '.one';
+                blinkMake = 'blinkNumber';
+                break;
+            case '2':
+                affector = '.two';
+                blinkMake = 'blinkNumber';
+                break;
+            case '3':
+                affector = '.three';
+                blinkMake = 'blinkNumber';
+                break;
+            case '4':
+                affector = '.four';
+                blinkMake = 'blinkNumber';
+                break;
+            case '5':
+                affector = '.five';
+                blinkMake = 'blinkNumber';
+                break;
+            case '6':
+                affector = '.six';
+                blinkMake = 'blinkNumber';
+                break;
+            case '7':
+                affector = '.seven';
+                blinkMake = 'blinkNumber';
+                break;
+            case '8':
+                affector = '.eight';
+                blinkMake = 'blinkNumber';
+                break;
+            case '9':
+                affector = '.nine';
+                blinkMake = 'blinkNumber';
+                break;
+            case '0':
+                affector = '.zero';
+                blinkMake = 'blinkNumber';
+                break;
+            case '%':
+                affector = '.perc';
+                blinkMake = 'blinkOperator';
+                break;
+            case '/':
+                affector = '.divi';
+                blinkMake = 'blinkOperator';
+                break;
+            case '*':
+                affector = '.mult';
+                blinkMake = 'blinkOperator';
+                break;
+            case '-':
+                affector = '.minu';
+                blinkMake = 'blinkOperator';
+                break;
+            case '+':
+                affector = '.plus';
+                blinkMake = 'blinkOperator';
+                break;
+            case 'Backspace':
+                affector = '.back';
+                blinkMake = 'blinkOperator';
+                break;
+            case '.':
+                affector = '.deci';
+                blinkMake = 'blinkOperator';
+                break;
+        }
+
+        document.querySelector(affector).classList.add(blinkMake);
+        setTimeout(function () {
+            document.querySelector(affector).classList.remove(blinkMake);
+
+        }, 200)
         UICtrlr.updateDisplay(keyPress);
     }
     

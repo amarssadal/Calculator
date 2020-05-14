@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <style>
+            .one {
+                background-color: red;
+            }
+            .two {
+                background-color: green;
+            }
+            .three {
+                background-color: blue;
+            }
+            .select {
+                background-color: black;
+            }
+            .clickhere {
+                background-color: yellow;
+            }
+        </style>
+    </head>
+    <body>
+        <div class = "one">
+            ONE
+        </div>
+        <div class = "two">
+            TWO
+        </div>
+        <div class = "three">
+            THREE
+        </div>
+        <div class = "clickhere">
+            CLICK HERE
+        </div>
+        <script>
+            let temp = document.querySelector('.three');
+            document.querySelector('.clickhere').addEventListener('click', () => {
+                temp.classList.add('select');
+                console.log(temp);
+                setTimeout(function () {
+                    temp.classList.remove('select');
+                    console.log(temp);
+                }, 1000);
+            });
+        </script>
+    </body>
+</html>
