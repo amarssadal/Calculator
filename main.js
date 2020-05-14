@@ -20,11 +20,11 @@ let dataCalculator = (function (){
         
         //========|DEFINING THE MATHS CALCULATIONS
         mathMaker = {
-            '%': function (x, y) { return parseFloat(x /100).toFixed(2) },
-            '*': function (x, y) { return parseFloat(x * y.toFixed(2)) },
-            '/': function (x, y) { return parseFloat(x / y).toFixed(2) },
+            '%': function (x, y) { return parseFloat(x /100) },
+            '*': function (x, y) { return parseFloat(x * y) },
+            '/': function (x, y) { return parseFloat(x / y) },
             '+': function (x, y) { return parseFloat(x) + parseFloat(y) },
-            '-': function (x, y) { return parseFloat(x - y).toFixed(2) }
+            '-': function (x, y) { return parseFloat(x - y) }
         }
         
         //========|IF POSITION COUNTER INSIDE RECUSION SHOULD PROCEED OR NOT
@@ -128,6 +128,9 @@ let dataCalculator = (function (){
         console.log("POST THIRD PASS", arr);
         
         results = arr[0];
+        if (results % 1 !== 0) {
+            results = results.toFixed(2);
+        }
         console.log(results);
         UIController.updateResults(results);
     }
@@ -210,11 +213,25 @@ let UIController = (function () {
                 if (valKeys.indexOf(keyPress.key) !== -1 || keyPress.key === '.') {
                     tempHolder.push(keyPress.key);
                     currentDisp.push(keyPress.key);
+                    console.log(tempHolder, currentDisp);
                 } else if (valOper.indexOf(keyPress.key) !== -1) {
                     tempHolder.push('x');
                     tempHolder.push(keyPress.key);
                     tempHolder.push('x');
                     currentDisp.push(keyPress.key);
+                    console.log(tempHolder, currentDisp);
+                } else if (keyPress.key === "Backspace") {
+                    if (tempHolder[tempHolder.length-1] === "x") {
+                        currentDisp.pop();
+                        tempHolder.pop();
+                        tempHolder.pop();
+                        tempHolder.pop();
+                        console.log(tempHolder, currentDisp);
+                    } else {
+                        currentDisp.pop();
+                        tempHolder.pop();
+                        console.log(tempHolder, currentDisp);
+                    }
                 }
                 document.querySelector(DOMStrings.disp).innerHTML = currentDisp.join('');
                 dataCalculator.updateHold(tempHolder.join(''));
@@ -269,6 +286,9 @@ let mainController = (function(dataCalc, UICtrlr) {
                 tempOper = 0, tempDec = 0;
                 re_initialise();
                 console.log("Esc");
+            } else if (e.key === "Backspace") { // BACKSPACE KEY
+                updateFirst(e);
+                console.log("Backspace");
             }
         });        
     }
