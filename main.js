@@ -20,11 +20,11 @@ let dataCalculator = (function (){
         
         //========|DEFINING THE MATHS CALCULATIONS
         mathMaker = {
-            '%': function (x, y) { return x /100 },
-            '*': function (x, y) { return x * y },
-            '/': function (x, y) { return x / y },
+            '%': function (x, y) { return parseFloat(x /100).toFixed(2) },
+            '*': function (x, y) { return parseFloat(x * y.toFixed(2)) },
+            '/': function (x, y) { return parseFloat(x / y).toFixed(2) },
             '+': function (x, y) { return parseFloat(x) + parseFloat(y) },
-            '-': function (x, y) { return (x) - (y) }
+            '-': function (x, y) { return parseFloat(x - y).toFixed(2) }
         }
         
         //========|IF POSITION COUNTER INSIDE RECUSION SHOULD PROCEED OR NOT
