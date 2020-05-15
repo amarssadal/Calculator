@@ -197,6 +197,7 @@ let dataCalculator = (function (){
         //========|UPDATE INTERNAL DATA HOLDER
         calculateFinal: function () {
             //----|ITERATE THROUGH THE INPUT ARRAY AND MAKE SURE NUMBERS ARE VALID
+            if (!calcsHolder) { return; }
             for (let x = 0; x < calcsHolder.length; x++) {
                 if (x % 2 === 0) {
                     let temp = calcsHolder[x].match(digitsRegx);
@@ -259,7 +260,7 @@ let UIController = (function () {
         },
         //========|UPDATE DISPLAY
         updateDisplay: function (keyPress) {
-            if (currentDisp.length < 25) {
+            if (currentDisp.length < 16) {
                 if (valKeys.indexOf(keyPress) !== -1 || keyPress === '.') {
                     tempHolder.push(keyPress);
                     currentDisp.push(keyPress);
@@ -383,6 +384,13 @@ let mainController = (function(dataCalc, UICtrlr) {
         document.querySelector('.back').addEventListener('click', () => updateFirst('Backspace'));
     }
     
+    function buttonBlinkers(affector, blinkMake) {
+        document.querySelector(affector).classList.add(blinkMake);
+        setTimeout(function () {
+            document.querySelector(affector).classList.remove(blinkMake);
+        }, 100)
+    }
+
     //::::::::::::|UPDATE DISPLAY ONLY & DATA STRUCTURE
     function updateFirst (keyPress) {
         //FOR BLINK EFFECT
@@ -458,22 +466,19 @@ let mainController = (function(dataCalc, UICtrlr) {
                 break;
         }
 
-        document.querySelector(affector).classList.add(blinkMake);
-        setTimeout(function () {
-            document.querySelector(affector).classList.remove(blinkMake);
-
-        }, 200)
+        buttonBlinkers(affector, blinkMake);
         UICtrlr.updateDisplay(keyPress);
     }
     
     
     //::::::::::::|UPDATE RESULT ONLY & DATA STRUCTURE << IF ENTER IS PRESSED
      function updateSecond (keyPress) {
+         buttonBlinkers('.ente', 'blinkOperator');
          dataCalc.calculateFinal();
     }
     
     
-    //::::::::::::|INITIALISE APP 
+    //::::::::::::|INITIALISE APP
     function initialise() {
         eventListeners();
     }
@@ -481,6 +486,7 @@ let mainController = (function(dataCalc, UICtrlr) {
     
     //::::::::::::|RE-INITIALISE APP 
     function re_initialise() {
+        buttonBlinkers('.esca', 'blinkOperator');
         UICtrlr.reInitialize();
         dataCalc.updateHold(0);        
     }

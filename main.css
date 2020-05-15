@@ -17,52 +17,46 @@ body {
 
 /*/////////| MAIN CALC BOX =-*/
 .calcBox {
-    width: 600px;
-    border-radius: 5px;
-    display: grid;
-    grid-template-columns: 1fr;
+    width: 80vw;
 }
 
 /*/////////| TWO UPPER DISPLAYS =-*/
 .calcBox .displayBox {
-    width: 590px;
     font-size: 4rem;
-    font-family: 'Khand';
+    font-family: 'Share Tech Mono';
     padding: 5px;
     font-weight: 300px;
-    font-size: 3rem;
+    font-size: 6vw;
+    display: grid;
+    grid-template-rows: minmax(50px, 1fr) minmax(40px, 1fr);
 }
 
-/*/////////| UPPER CALCULATION DISPLAY =-*/
-.calcBox .displayBox .disp {
+/*/////////| THE TWO DISPLAY BOXES =-*/
+.calcBox .displayBox .disp, .calcBox .displayBox .results  {
     border: 1px solid rgba(155, 135, 255, 0.5);
     border-radius: 15px;
     text-align: right;
-    justify-content: end;
-    height: 75px;
-    padding: 0 10px 0px;
-    color: rgba(055, 150, 200, 1.75);
+    height: auto;
+    margin: 10px;
+    padding: 10px;
+    color: rgba(255, 228, 148, 0.60);
 }
 
 /*/////////| LOWER RESULTS DISPLAY =-*/
 .calcBox .displayBox .results {
-    border: 1px solid rgba(155, 255, 135, 0.5);
-    border-radius: 15px;
-    text-align: right;
-    height: 75px;
-    margin: 10px 0 0;
-    padding: 0 10px 0px;
-    color: rgba(155, 250, 100, 0.75);
+    color: rgba(155, 250, 100, 0.60);
 }
 
 .buttonBox {
     display: grid;
-    grid-template-columns: 150px 150px 150px 150px;
-    grid-template-rows: 80px 80px 80px 80px 80px;
+    grid-template-columns: minmax(50px, 1fr) minmax(50px, 1fr) minmax(50px, 1fr) minmax(50px, 1fr) ;
+    grid-template-rows:  minmax(75px, 1fr) minmax(75px, 1fr) minmax(75px, 1fr) minmax(75px, 1fr) minmax(75px, 1fr);
     font-family: 'Montserrat';
     font-style: italic;
     font-weight: 200;
     user-select: none;
+    margin: 5px;
+    padding:5px;
 }
 
 .buttonBox > * {
@@ -88,13 +82,13 @@ body {
 }
 
 .blinkNumber {
-    font-size: 2rem;
+    font-size: 4.5vh;
     box-shadow: inset 0 0 15px black, 0 0 10px rgb(252, 162, 255);
     background-color: rgba(151, 255, 168, .5);
 }
 
 .blinkOperator {
-    font-size: 2rem;
+    font-size: 4.5vh;
     box-shadow: inset 0 0 15px black, 0 0 10px rgb(252, 162, 255);
     background-color: rgba(255, 116, 225, 0.5);
 }
@@ -108,4 +102,10 @@ body {
     justify-content: center;
     border: 1px solid rgba(200, 150, 200, 0.75);
     border-radius: 15px;
+}
+
+@media only screen and (max-width: 700px) {
+    .calcBox {
+        
+    }
 }
