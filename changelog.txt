@@ -1,0 +1,10 @@
+V1
+KNOWN ISSUES:
+Backspace not working
+Mouse button click not working
+Keyboard entry button blink not working
++ and - for pre of numbers not working
+add a click sound to all buttons when typed or clicked
+pressing enter again should do the last operation again
+Button text should be non selectable
+Limit decimal place to two

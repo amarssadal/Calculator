@@ -7,6 +7,7 @@ let dataCalculator = (function (){
         return UIController.GVals();
     }
     
+<<<<<<< HEAD
     //::::::::::::|REGEX FOR VALIDATING EACH SET OF NUMBER ENTERED
     let digitsRegx = /^([-*|.|\+*|\d+]|[\d]*)\d*?\.{0,1}?(\d+)$/g;
     let operRegx = /^[*%+-\/]$/g;
@@ -61,6 +62,14 @@ let dataCalculator = (function (){
                 return calcsHolder.join('');
             }
         }
+=======
+    //::::::::::::|REGEX FOR VALIDATE EACH NUMBER ENTERED
+    let digitsRegx = /^([-*|.|\+*|\d+]|[\d]*)\d*?\.{0,1}?(\d+)$/g;
+    let operRegx = /^[*%+-\/]$/g;
+
+    //::::::::::::|FINAL CALCULATOR
+    function finalCalculator () {
+>>>>>>> 1a59ffd281875dd37242eebd745c36d9da7f4963
         let results = 0;
         let mathMaker;
         let arr = [...calcsHolder];
@@ -68,11 +77,19 @@ let dataCalculator = (function (){
         
         //========|DEFINING THE MATHS CALCULATIONS
         mathMaker = {
+<<<<<<< HEAD
             '%': function (x, y) { return parseFloat(x /100) },
             '*': function (x, y) { return parseFloat(x * y) },
             '/': function (x, y) { return parseFloat(x / y) },
             '+': function (x, y) { return parseFloat(x) + parseFloat(y) },
             '-': function (x, y) { return parseFloat(x - y) }
+=======
+            '%': function (x, y) { return x /100 },
+            '*': function (x, y) { return x * y },
+            '/': function (x, y) { return x / y },
+            '+': function (x, y) { return parseFloat(x) + parseFloat(y) },
+            '-': function (x, y) { return (x) - (y) }
+>>>>>>> 1a59ffd281875dd37242eebd745c36d9da7f4963
         }
         
         //========|IF POSITION COUNTER INSIDE RECUSION SHOULD PROCEED OR NOT
@@ -174,6 +191,7 @@ let dataCalculator = (function (){
         //========|CALL THIRD RECURSOR THEN RESET VARIABLES
         thirdPass(arr);
         console.log("POST THIRD PASS", arr);
+<<<<<<< HEAD
 
         results = arr[0];
         if (results % 1 !== 0) {
@@ -182,12 +200,21 @@ let dataCalculator = (function (){
 
         console.log(results);
         UIController.updateResults(addPunc(results));
+=======
+        
+        results = arr[0];
+        console.log(results);
+        UIController.updateResults(results);
+>>>>>>> 1a59ffd281875dd37242eebd745c36d9da7f4963
     }
     
     return {
         //========|UPDATE INTERNAL DATA HOLDER
         updateHold: function (calcs) {
+<<<<<<< HEAD
             console.log(calcs);
+=======
+>>>>>>> 1a59ffd281875dd37242eebd745c36d9da7f4963
             if(calcs.length === 1) {
                 calcsHolder = calcs;
             } else if (calcs.length > 1) {
@@ -197,11 +224,17 @@ let dataCalculator = (function (){
         //========|UPDATE INTERNAL DATA HOLDER
         calculateFinal: function () {
             //----|ITERATE THROUGH THE INPUT ARRAY AND MAKE SURE NUMBERS ARE VALID
+<<<<<<< HEAD
             if (!calcsHolder) { return; }
             for (let x = 0; x < calcsHolder.length; x++) {
                 if (x % 2 === 0) {
                     let temp = calcsHolder[x].match(digitsRegx);
                     console.log(temp);
+=======
+            for (let x = 0; x < calcsHolder.length; x++) {
+                if (x % 2 === 0) {
+                    let temp = calcsHolder[x].match(digitsRegx);
+>>>>>>> 1a59ffd281875dd37242eebd745c36d9da7f4963
                     if (!temp) {
                         UIController.updateResults('INVALID');
                         return;
@@ -247,6 +280,10 @@ let UIController = (function () {
     //::::::::::::|VALID KEY PRESS VALUES
     const valOper = [ '%', '*', '/', '+', '-' ];
     const valKeys = [ '7', '8', '9', '4', '5', '6', '1', '2', '3', '0'];
+<<<<<<< HEAD
+=======
+    valCode = [27, 8];
+>>>>>>> 1a59ffd281875dd37242eebd745c36d9da7f4963
     
     
     //::::::::::::|CURRENT DISPLAY VALUES
@@ -256,6 +293,7 @@ let UIController = (function () {
     return {
         //========|SEND STRINGS TO OTHERS
         GVals: function () {
+<<<<<<< HEAD
             return { DOMStrings, valKeys, valOper, currentDisp };
         },
         //========|UPDATE DISPLAY
@@ -306,6 +344,22 @@ let UIController = (function () {
                 document.querySelector(DOMStrings.disp).innerHTML = 0;
                 dataCalculator.updateHold(tempHolder);
             } else {
+=======
+            return { DOMStrings, valKeys, valCode, valOper, currentDisp };
+        },
+        //========|UPDATE DISPLAY
+        updateDisplay: function (keyPress) {
+            if (currentDisp.length < 28) {
+                if (valKeys.indexOf(keyPress.key) !== -1 || keyPress.key === '.') {
+                    tempHolder.push(keyPress.key);
+                    currentDisp.push(keyPress.key);
+                } else if (valOper.indexOf(keyPress.key) !== -1) {
+                    tempHolder.push('x');
+                    tempHolder.push(keyPress.key);
+                    tempHolder.push('x');
+                    currentDisp.push(keyPress.key);
+                }
+>>>>>>> 1a59ffd281875dd37242eebd745c36d9da7f4963
                 document.querySelector(DOMStrings.disp).innerHTML = currentDisp.join('');
                 dataCalculator.updateHold(tempHolder.join(''));
             }
@@ -337,6 +391,7 @@ let mainController = (function(dataCalc, UICtrlr) {
     
     //::::::::::::|EVENT LISTENERS 
     var eventListeners = function () {
+<<<<<<< HEAD
         let tempOper = 0, tempDec = 0, currpos = 0; currKey = 0;
         //========|KEY PRESS DETECTION
         document.addEventListener("keydown", e => {
@@ -467,18 +522,56 @@ let mainController = (function(dataCalc, UICtrlr) {
         }
 
         buttonBlinkers(affector, blinkMake);
+=======
+        let tempOper = 0, tempDec = 0, currpos = 0;
+        //========|KEY PRESS DETECTION
+        document.addEventListener("keydown", e => {
+            if (GVals().valKeys.indexOf(e.key) !== -1) {
+                tempOper = 0;
+                currpos += 1;
+                updateFirst(e);
+            } else if (GVals().valOper.indexOf(e.key) !== -1 && tempOper === 0) {
+                tempOper += 1, tempDec = 0;
+                currpos += 1;
+                updateFirst(e);
+            } else if (e.key === '.' && tempDec === 0) {
+                tempDec += 1;
+                currpos += 1;
+                updateFirst(e);
+            } else if (e.keyCode === 13) { // ENTER KEY
+                tempOper = 0;
+                updateSecond();
+            } else if (e.key === "Escape") { // ESCAPE KEY
+                tempOper = 0, tempDec = 0;
+                re_initialise();
+                console.log("Esc");
+            }
+        });        
+    }
+    
+    
+    //::::::::::::|UPDATE DISPLAY ONLY & DATA STRUCTURE
+    function updateFirst (keyPress) {
+>>>>>>> 1a59ffd281875dd37242eebd745c36d9da7f4963
         UICtrlr.updateDisplay(keyPress);
     }
     
     
     //::::::::::::|UPDATE RESULT ONLY & DATA STRUCTURE << IF ENTER IS PRESSED
      function updateSecond (keyPress) {
+<<<<<<< HEAD
          buttonBlinkers('.ente', 'blinkOperator');
+=======
+>>>>>>> 1a59ffd281875dd37242eebd745c36d9da7f4963
          dataCalc.calculateFinal();
     }
     
     
+<<<<<<< HEAD
     //::::::::::::|INITIALISE APP
+=======
+    //::::::::::::|INITIALISE APP 
+>>>>>>> 1a59ffd281875dd37242eebd745c36d9da7f4963
     function initialise() {
         eventListeners();
     }
@@ -486,7 +579,10 @@ let mainController = (function(dataCalc, UICtrlr) {
     
     //::::::::::::|RE-INITIALISE APP 
     function re_initialise() {
+<<<<<<< HEAD
         buttonBlinkers('.esca', 'blinkOperator');
+=======
+>>>>>>> 1a59ffd281875dd37242eebd745c36d9da7f4963
         UICtrlr.reInitialize();
         dataCalc.updateHold(0);        
     }
